@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#6e0404">
+<title>لوحة التحكم</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Aref+Ruqaa:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--maroon:#6e0404;--maroon-2:#8c1212;--pink:#fbcfe3;--pink-2:#f4a9c4;--bg:#fdf1f5;--card:#fff;--text:#3b0a10;--muted:#8a6570;--line:#f1d3dd;--ok:#1f8a4c;--err:#c0142a}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;touch-action:manipulation}
+.hidden{display:none!important}
+
+/* ---------- auth ---------- */
+.auth{min-height:100vh;display:grid;place-items:center;padding:24px 16px;background:radial-gradient(ellipse at 50% 20%,#8d0f1c,#3a0209)}
+.auth-card{width:min(440px,100%);background:#fff;border-radius:22px;padding:28px 22px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.auth-card h1{font-family:'Aref Ruqaa',serif;color:var(--maroon);font-size:34px;text-align:center}
+.auth-card .sub{text-align:center;color:var(--muted);margin:4px 0 20px}
+.steps{background:#fff6f9;border:1px solid var(--line);border-radius:14px;padding:12px 14px 12px 12px;margin-bottom:16px;font-size:14px;line-height:1.9}
+.steps ol{padding-inline-start:20px}
+.steps a{color:var(--maroon-2);font-weight:700;word-break:break-all}
+.steps code{background:#fde6ee;padding:1px 6px;border-radius:6px;direction:ltr;display:inline-block}
+
+label.f{display:block;font-weight:600;margin:14px 0 6px}
+label.f small{font-weight:400;color:var(--muted)}
+input[type=text],input[type=password],textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;background:#fff;outline:none;transition:border-color .2s;font-size:16px}
+input:focus,textarea:focus{border-color:var(--pink-2)}
+textarea{resize:vertical;min-height:90px;line-height:1.8}
+.ltr{direction:ltr;text-align:left}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:10px 20px;border-radius:14px;font-weight:700;background:var(--maroon);color:#fff;transition:.2s}
+.btn:hover{background:var(--maroon-2)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.block{width:100%;margin-top:20px}
+.btn.ghost{background:#fff;color:var(--maroon);border:1.5px solid var(--line)}
+.btn.ghost:hover{background:#fff4f7}
+.btn.sm{min-height:38px;padding:6px 14px;font-size:14px;border-radius:11px}
+.msg{margin-top:12px;font-size:14px;min-height:1.4em;text-align:center}
+.msg.err{color:var(--err)}.msg.ok{color:var(--ok)}
+
+/* ---------- app ---------- */
+header{position:sticky;top:0;z-index:20;background:var(--maroon);color:#fff;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top));display:flex;align-items:center;gap:10px;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+header h1{font-family:'Aref Ruqaa',serif;font-size:24px;flex:1}
+header a,header button{color:#fff;background:rgba(255,255,255,.14);border-radius:10px;padding:7px 12px;font-size:13px;font-weight:600;text-decoration:none}
+.tabs{position:sticky;top:calc(56px + env(safe-area-inset-top));z-index:19;display:flex;gap:6px;padding:10px 12px;background:var(--bg);border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{flex:1;white-space:nowrap;padding:9px 12px;border-radius:12px;font-weight:700;color:var(--muted);background:#fff;border:1.5px solid var(--line)}
+.tabs::-webkit-scrollbar{display:none}.tabs{scrollbar-width:none}
+@media (max-width:480px){.tabs{gap:4px;padding:8px}.tabs button{padding:8px 4px;font-size:13px}}
+.tabs button.on{background:var(--maroon);color:#fff;border-color:var(--maroon)}
+main{width:min(860px,100%);margin:0 auto;padding:16px 14px 120px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 16px;margin-bottom:16px;box-shadow:0 4px 14px rgba(110,4,4,.05)}
+.card h2{font-size:18px;color:var(--maroon);margin-bottom:4px}
+.card .hint{color:var(--muted);font-size:13px;margin-bottom:6px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+@media (max-width:600px){.grid2{grid-template-columns:1fr}}
+
+.list-row{display:flex;gap:8px;align-items:center;margin-top:8px}
+.list-row input{flex:1}
+.icon-btn{width:40px;height:40px;border-radius:11px;background:#fff4f7;border:1.5px solid var(--line);display:grid;place-items:center;font-size:16px;flex:none}
+.icon-btn:hover{background:#ffe6ee}
+.icon-btn:disabled{opacity:.35}
+
+.cake-row{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.cake-prev{width:130px;height:130px;border-radius:50%;object-fit:cover;border:5px solid #fff;box-shadow:0 0 0 3px var(--pink-2);background:#fde6ee}
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-top:14px}
+.ph{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.ph .img{position:relative}
+.ph img{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#fde6ee}
+.ph .num{position:absolute;top:6px;right:6px;background:rgba(110,4,4,.85);color:#fff;border-radius:8px;padding:0 8px;font-size:12px;font-weight:700}
+.ph .new{position:absolute;top:6px;left:6px;background:#1f8a4c;color:#fff;border-radius:8px;padding:0 8px;font-size:11px;font-weight:700}
+.ph input{border:0;border-top:1px solid var(--line);border-radius:0;font-size:14px;padding:9px 10px}
+.ph .acts{display:flex;border-top:1px solid var(--line)}
+.ph .acts button{flex:1;padding:8px 0;font-size:15px}
+.ph .acts button:hover{background:#fff4f7}
+.ph .acts button:disabled{opacity:.3}
+.ph .acts .del{color:var(--err)}
+.empty{text-align:center;color:var(--muted);padding:26px 10px;border:2px dashed var(--line);border-radius:14px;margin-top:14px}
+.drop{outline:3px dashed var(--pink-2);outline-offset:4px}
+
+audio{width:100%;margin-top:10px}
+.song-name{font-weight:700;direction:ltr;text-align:right;word-break:break-all}
+
+.savebar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#fff;border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:12px;box-shadow:0 -6px 20px rgba(110,4,4,.08)}
+.savebar .status{flex:1;font-size:14px;color:var(--muted);line-height:1.5}
+.savebar .status.dirty{color:#b35a00;font-weight:600}
+.savebar .status.ok{color:var(--ok);font-weight:600}
+.savebar .status.err{color:var(--err);font-weight:600}
+.savebar .btn{min-width:150px}
+.progress{height:4px;background:var(--line);border-radius:4px;overflow:hidden;margin-top:6px}
+.progress i{display:block;height:100%;width:0;background:var(--maroon-2);transition:width .3s}
+.spin{width:18px;height:18px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp 0.8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- ============ SETUP (first time) ============ -->
+<section class="auth hidden" id="setup">
+  <div class="auth-card">
+    <h1>تجهيز لوحة التحكم</h1>
+    <p class="sub">مرة وحدة بس، بعدها تدخل بالباسورد</p>
+    <div class="steps">
+      <b>سوي مفتاح GitHub (Token):</b>
+      <ol>
+        <li>افتح: <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a></li>
+        <li>اكتب أي اسم، واختار مدة الصلاحية (مثلاً سنة)</li>
+        <li><b>Repository access</b> ← <b>Only select repositories</b> ← اختار <code id="repoName"></code></li>
+        <li><b>Permissions</b> ← <b>Contents</b> ← <b>Read and write</b></li>
+        <li>اضغط <b>Generate token</b> وانسخه والصقه هنا</li>
+      </ol>
+    </div>
+    <label class="f" for="sToken">مفتاح GitHub</label>
+    <input type="password" id="sToken" class="ltr" placeholder="github_pat_..." autocomplete="off">
+    <label class="f" for="sPw">باسورد لوحة التحكم <small>(10 أحرف أو أكثر)</small></label>
+    <input type="password" id="sPw" autocomplete="new-password">
+    <label class="f" for="sPw2">أعد كتابة الباسورد</label>
+    <input type="password" id="sPw2" autocomplete="new-password">
+    <button class="btn block" id="sBtn">حفظ وتجهيز</button>
+    <p class="msg" id="sMsg"></p>
+  </div>
+</section>
+
+<!-- ============ LOGIN ============ -->
+<section class="auth hidden" id="login">
+  <form class="auth-card" id="loginForm">
+    <h1>لوحة التحكم 🌹</h1>
+    <p class="sub">اكتب الباسورد حتى تعدل الموقع</p>
+    <label class="f" for="lPw">الباسورد</label>
+    <input type="password" id="lPw" autocomplete="current-password" autofocus>
+    <button class="btn block" id="lBtn" type="submit">دخول</button>
+    <p class="msg" id="lMsg"></p>
+  </form>
+</section>
+
+<!-- ============ LOADING ============ -->
+<section class="auth" id="loading"><div class="auth-card" style="text-align:center"><h1>لحظة… 🌹</h1><p class="sub" id="loadMsg">جاري التحميل</p></div></section>
+
+<!-- ============ APP ============ -->
+<div id="app" class="hidden">
+  <header>
+    <h1>لوحة التحكم</h1>
+    <a id="siteLink" href="./" target="_blank" rel="noopener">فتح الموقع ↗</a>
+    <button id="logout">خروج</button>
+  </header>
+  <nav class="tabs">
+    <button data-tab="texts" class="on">📝 النصوص</button>
+    <button data-tab="photos">📸 الصور</button>
+    <button data-tab="song">🎵 الأغنية</button>
+    <button data-tab="settings">⚙️ الإعدادات</button>
+  </nav>
+
+  <main>
+    <!-- TEXTS -->
+    <div data-panel="texts">
+      <div class="card">
+        <h2>الاسم والبداية</h2>
+        <div class="grid2">
+          <div><label class="f">الاسم</label><input type="text" data-k="name"></div>
+          <div><label class="f">الجملة فوق الاسم <small>(صفحة الورد)</small></label><input type="text" data-k="introSubtitle"></div>
+          <div><label class="f">زر فتح الهدية</label><input type="text" data-k="openBtn"></div>
+          <div><label class="f">عنوان صفحة الظرف</label><input type="text" data-k="heroTitle"></div>
+        </div>
+        <label class="f">عنوان صفحة الاختيارات</label><input type="text" data-k="chooseTitle">
+      </div>
+
+      <div class="card">
+        <h2>💌 الرسالة</h2>
+        <label class="f">عنوان الرسالة</label><input type="text" data-k="letterTitle">
+        <label class="f">نص الرسالة <small>(كل سطر ينكتب بسطر)</small></label><textarea data-k="letter" rows="9"></textarea>
+        <label class="f">التوقيع</label><input type="text" data-k="signature">
+      </div>
+
+      <div class="card">
+        <h2>🌷 كروت الورد</h2>
+        <p class="hint">تكدر تضيف أي عدد من الكروت</p>
+        <div id="notesList"></div>
+        <button class="btn ghost sm" id="addNote" style="margin-top:12px">➕ إضافة كارت</button>
+        <label class="f">الجملة تحت الباقة</label><input type="text" data-k="flowersCaption">
+      </div>
+
+      <div class="card">
+        <h2>🎂 الكيكة والأمنية</h2>
+        <div class="grid2">
+          <div><label class="f">عنوان صفحة الكيكة</label><input type="text" data-k="cakeTitle"></div>
+          <div><label class="f">عنوان الأمنية</label><input type="text" data-k="wishTitle"></div>
+        </div>
+        <label class="f">كلام الأمنية <small>(يطلع بعد ما تطفي الشموع)</small></label><textarea data-k="wish" rows="3"></textarea>
+        <label class="f">عنوان صفحة الذكريات</label><input type="text" data-k="memoriesTitle">
+      </div>
+    </div>
+
+    <!-- PHOTOS -->
+    <div data-panel="photos" class="hidden">
+      <div class="card">
+        <h2>🎂 صورة الكيكة</h2>
+        <p class="hint">الصورة اللي تطلع بنص الكيكة</p>
+        <div class="cake-row">
+          <img class="cake-prev" id="cakePrev" alt="">
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn sm" id="cakePick">🖼️ اختيار صورة</button>
+            <button class="btn ghost sm" id="cakeDel">🗑️ حذف</button>
+          </div>
+        </div>
+        <input type="file" id="cakeFile" accept="image/*" hidden>
+      </div>
+
+      <div class="card" id="galleryCard">
+        <h2>📸 الصور والذكريات</h2>
+        <p class="hint">أول 5 صور تطلع يم الكيكة، وكل الصور تطلع بصفحة «ذكرياتنا». تكدر تكتب كلام تحت كل صورة وترتبهن.</p>
+        <button class="btn sm" id="addPhotos">➕ إضافة صور</button>
+        <input type="file" id="photoFiles" accept="image/*" multiple hidden>
+        <div class="photos" id="photos"></div>
+        <div class="empty hidden" id="photosEmpty">ماكو صور بعد. اضغط «إضافة صور» أو اسحب الصور هنا 📷</div>
+      </div>
+    </div>
+
+    <!-- SONG -->
+    <div data-panel="song" class="hidden">
+      <div class="card">
+        <h2>🎵 أغنية الموقع</h2>
+        <p class="hint">تشتغل أول ما تفتح الموقع وتعيد نفسها. إذا ماكو أغنية تشتغل موسيقى Happy Birthday الافتراضية.</p>
+        <div id="songNow" style="margin-top:10px"></div>
+        <audio id="songPlayer" controls class="hidden"></audio>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
+          <button class="btn sm" id="songPick">⬆️ رفع أغنية</button>
+          <button class="btn ghost sm" id="songDel">🗑️ رجّع الموسيقى الافتراضية</button>
+        </div>
+        <input type="file" id="songFile" accept="audio/*,.mp3,.m4a,.aac,.ogg,.wav" hidden>
+        <p class="hint" style="margin-top:10px">الأفضل ملف MP3 وحجمه أقل من 25 ميغا.</p>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div data-panel="settings" class="hidden">
+      <div class="card">
+        <h2>🔑 تغيير الباسورد</h2>
+        <label class="f">الباسورد الجديد <small>(10 أحرف أو أكثر)</small></label><input type="password" id="nPw" autocomplete="new-password">
+        <label class="f">أعد كتابته</label><input type="password" id="nPw2" autocomplete="new-password">
+        <button class="btn sm" id="nBtn" style="margin-top:14px">تغيير الباسورد</button>
+        <p class="msg" id="nMsg" style="text-align:start"></p>
+      </div>
+      <div class="card">
+        <h2>🔄 تغيير مفتاح GitHub</h2>
+        <p class="hint">إذا انتهت صلاحية المفتاح، سوي واحد جديد والصقه هنا.</p>
+        <label class="f">المفتاح الجديد</label><input type="password" id="newToken" class="ltr" placeholder="github_pat_..." autocomplete="off">
+        <label class="f">الباسورد الحالي</label><input type="password" id="curPw" autocomplete="current-password">
+        <button class="btn sm" id="tBtn" style="margin-top:12px">حفظ المفتاح</button>
+        <p class="msg" id="tMsg" style="text-align:start"></p>
+      </div>
+      <div class="card">
+        <h2>ℹ️ معلومات</h2>
+        <p class="hint" id="info" style="line-height:1.9"></p>
+      </div>
+    </div>
+  </main>
+
+  <div class="savebar">
+    <div class="status" id="status">كل شي محفوظ ✓<div class="progress hidden" id="prog"><i></i></div></div>
+    <button class="btn" id="saveBtn" disabled>💾 حفظ ونشر</button>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   Settings
+   ========================================================= */
+const REPO = (() => {
+  const h = location.hostname;
+  if (h.endsWith('.github.io')) return { owner: h.split('.')[0], repo: location.pathname.split('/')[1] || h };
+  return { owner: 'AdnanMohammed0', repo: 'masarra-birthday' };
+})();
+const BRANCH = 'main';
+const KEY_FILE = 'admin-key.json';
+const API = `https://api.github.com/repos/${REPO.owner}/${REPO.repo}`;
+const RAW = `https://raw.githubusercontent.com/${REPO.owner}/${REPO.repo}/${BRANCH}/`;
+const SITE = location.hostname.endsWith('.github.io') ? `https://${location.hostname}/${REPO.repo}/` : './';
+const FIELDS = ['name','introSubtitle','openBtn','heroTitle','chooseTitle','letterTitle','letter','signature','flowersCaption','cakeTitle','wishTitle','wish','memoriesTitle'];
+const DEFAULTS = {
+  name:'مسرة', introSubtitle:'Happy Birthday', openBtn:'افتحي هديتج 💝', heroTitle:'Happy Birthday!', chooseTitle:'Choose Your Surprise',
+  letterTitle:'حبيبتي مسرة،', letter:'', signature:'Forever yours', notes:[], flowersCaption:'A bouquet made with love',
+  cakeTitle:'Happy Birthday', memoriesTitle:'Our Memories', wishTitle:'تمنّي أمنية ✨', wish:'', cakePhoto:'', photos:[], song:''
+};
+
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const enc = new TextEncoder(), dec = new TextDecoder();
+const show = id => ['setup','login','loading','app'].forEach(x => $('#'+x).classList.toggle('hidden', x !== id));
+const clone = o => JSON.parse(JSON.stringify(o));
+function setMsg(el, text, kind){ el.textContent = text; el.className = 'msg' + (kind ? ' '+kind : ''); }
+
+/* =========================================================
+   Crypto: the GitHub token is stored encrypted with your password
+   ========================================================= */
+function bufToB64(buf){ const u = new Uint8Array(buf); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); }
+const b64ToBuf = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function deriveKey(pw, salt, iter){
+  const base = await crypto.subtle.importKey('raw', enc.encode(pw), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({ name:'PBKDF2', salt, iterations: iter, hash:'SHA-256' }, base, { name:'AES-GCM', length:256 }, false, ['encrypt','decrypt']);
+}
+async function encryptToken(token, pw){
+  const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12)), iter = 600000;
+  const key = await deriveKey(pw, salt, iter);
+  const data = await crypto.subtle.encrypt({ name:'AES-GCM', iv }, key, enc.encode(token));
+  return { v:1, iter, salt: bufToB64(salt), iv: bufToB64(iv), data: bufToB64(data) };
+}
+async function decryptToken(blob, pw){
+  const key = await deriveKey(pw, b64ToBuf(blob.salt), blob.iter);
+  const out = await crypto.subtle.decrypt({ name:'AES-GCM', iv: b64ToBuf(blob.iv) }, key, b64ToBuf(blob.data));
+  return dec.decode(out);
+}
+
+/* =========================================================
+   GitHub API
+   ========================================================= */
+let TOKEN = null, KEY_BLOB = null;
+async function gh(path, opts = {}, token = TOKEN){
+  const r = await fetch(path.startsWith('http') ? path : API + path, {
+    ...opts,
+    headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', ...(opts.body ? {'Content-Type':'application/json'} : {}) },
+    body: opts.body ? JSON.stringify(opts.body) : undefined,
+  });
+  if (!r.ok){ const t = await r.text(); const e = new Error(`GitHub ${r.status}: ${t.slice(0,180)}`); e.status = r.status; throw e; }
+  return r.status === 204 ? null : r.json();
+}
+async function checkToken(token){
+  const repo = await gh('', {}, token);
+  if (!repo.permissions || !repo.permissions.push) throw new Error('المفتاح ما عنده صلاحية كتابة على المستودع');
+}
+async function putFile(path, text, message){
+  let sha;
+  try { sha = (await gh(`/contents/${path}?ref=${BRANCH}`)).sha; } catch(e){ if (e.status !== 404) throw e; }
+  await gh(`/contents/${path}`, { method:'PUT', body:{ message, content: bufToB64(enc.encode(text)), branch: BRANCH, ...(sha ? {sha} : {}) } });
+}
+
+/* =========================================================
+   Boot
+   ========================================================= */
+$('#repoName').textContent = REPO.repo;
+$('#siteLink').href = SITE;
+
+async function loadKeyBlob(){
+  for (const url of [RAW + KEY_FILE + '?t=' + Date.now(), KEY_FILE + '?t=' + Date.now()]){
+    try { const r = await fetch(url, {cache:'no-store'}); if (r.ok) return await r.json(); } catch(e){}
+  }
+  return null;
+}
+
+(async function boot(){
+  if (!window.crypto || !crypto.subtle){
+    $('#loadMsg').innerHTML = 'لوحة التحكم تحتاج رابط <b>https</b>.<br>افتحها من رابط GitHub Pages: <br><a href="https://' + REPO.owner.toLowerCase() + '.github.io/' + REPO.repo + '/admin.html">' + REPO.owner.toLowerCase() + '.github.io/' + REPO.repo + '/admin.html</a>';
+    return;
+  }
+  KEY_BLOB = await loadKeyBlob();
+  const saved = sessionStorage.getItem('adm_t');
+  if (KEY_BLOB && saved){ TOKEN = saved; return openApp(); }
+  show(KEY_BLOB ? 'login' : 'setup');
+  if (KEY_BLOB) $('#lPw').focus();
+})();
+
+/* ---------- setup ---------- */
+$('#sBtn').addEventListener('click', async () => {
+  const token = $('#sToken').value.trim(), pw = $('#sPw').value, pw2 = $('#sPw2').value, m = $('#sMsg');
+  if (!token) return setMsg(m, 'الصق مفتاح GitHub', 'err');
+  if (pw.length < 10) return setMsg(m, 'الباسورد لازم 10 أحرف أو أكثر', 'err');
+  if (pw !== pw2) return setMsg(m, 'الباسوردين مو نفس الشي', 'err');
+  $('#sBtn').disabled = true; setMsg(m, 'جاري التأكد من المفتاح…');
+  try {
+    await checkToken(token);
+    TOKEN = token;
+    setMsg(m, 'جاري التشفير والحفظ…');
+    KEY_BLOB = await encryptToken(token, pw);
+    await putFile(KEY_FILE, JSON.stringify(KEY_BLOB, null, 2), 'Set up admin panel');
+    remember(); openApp();
+  } catch(e){ setMsg(m, e.status === 401 ? 'المفتاح غلط أو منتهي' : e.status === 404 ? 'المفتاح ما عنده وصول لهذا المستودع' : e.message, 'err'); }
+  $('#sBtn').disabled = false;
+});
+
+/* ---------- login ---------- */
+$('#loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const pw = $('#lPw').value, m = $('#lMsg');
+  if (!pw) return;
+  $('#lBtn').disabled = true; setMsg(m, 'جاري الدخول…');
+  try {
+    const token = await decryptToken(KEY_BLOB, pw);
+    TOKEN = token; remember(); await openApp();
+  } catch(err){
+    if (err.name === 'OperationError') setMsg(m, 'الباسورد غلط ❌', 'err');
+    else setMsg(m, err.status === 401 ? 'مفتاح GitHub منتهي. سوي واحد جديد من الإعدادات' : err.message, 'err');
+  }
+  $('#lBtn').disabled = false;
+});
+function remember(){ sessionStorage.setItem('adm_t', TOKEN); }
+$('#logout').addEventListener('click', () => {
+  if (dirty && !confirm('عندك تعديلات ما محفوظة. تطلع؟')) return;
+  sessionStorage.clear(); dirty = false; location.reload();
+});
+
+/* =========================================================
+   App state
+   ========================================================= */
+let content = null, original = null, dirty = false;
+const pending = {};   // path -> { b64 }  (new files not yet on GitHub)
+const previews = {};  // path -> object URL for instant preview
+
+async function openApp(){
+  show('loading'); $('#loadMsg').textContent = 'جاري تحميل المحتوى…';
+  try {
+    let c = {};
+    try { const f = await gh(`/contents/content.json?ref=${BRANCH}`); c = JSON.parse(dec.decode(b64ToBuf(f.content.replace(/\n/g,'')))); }
+    catch(e){ if (e.status !== 404) throw e; }
+    content = { ...clone(DEFAULTS), ...c };
+    original = clone(content);
+    render(); show('app');
+  } catch(e){
+    if (e.status === 401){ sessionStorage.clear(); show('login'); setMsg($('#lMsg'), 'مفتاح GitHub منتهي أو غلط', 'err'); return; }
+    $('#loadMsg').textContent = 'صار خطأ: ' + e.message;
+  }
+}
+const url = p => !p ? '' : (previews[p] || RAW + p.split('/').map(encodeURIComponent).join('/'));
+function markDirty(){ dirty = true; updateStatus(); }
+function updateStatus(text, kind){
+  const s = $('#status'), prog = $('#prog');
+  s.firstChild.textContent = text || (dirty ? 'عندك تعديلات ما منشورة بعد' : 'كل شي محفوظ ✓');
+  s.className = 'status ' + (kind || (dirty ? 'dirty' : ''));
+  s.appendChild(prog);
+  $('#saveBtn').disabled = !dirty;
+}
+addEventListener('beforeunload', e => { if (dirty){ e.preventDefault(); e.returnValue = ''; } });
+
+/* ---------- tabs ---------- */
+$$('.tabs button').forEach(b => b.addEventListener('click', () => {
+  $$('.tabs button').forEach(x => x.classList.toggle('on', x === b));
+  $$('[data-panel]').forEach(p => p.classList.toggle('hidden', p.dataset.panel !== b.dataset.tab));
+  scrollTo({ top: 0, behavior: 'smooth' });
+}));
+
+/* ---------- render ---------- */
+function render(){
+  $$('[data-k]').forEach(i => { i.value = content[i.dataset.k] ?? ''; });
+  renderNotes(); renderCake(); renderPhotos(); renderSong();
+  $('#info').innerHTML = `المستودع: <b>${REPO.owner}/${REPO.repo}</b><br>بعد «حفظ ونشر» الموقع يتحدث خلال دقيقة أو دقيقتين.<br>رابط الموقع: <a href="${SITE}" target="_blank" rel="noopener">${SITE}</a>`;
+  updateStatus();
+}
+$$('[data-k]').forEach(i => i.addEventListener('input', () => { content[i.dataset.k] = i.value; markDirty(); }));
+
+function renderNotes(){
+  const box = $('#notesList'); box.innerHTML = '';
+  content.notes.forEach((t, i) => {
+    const row = document.createElement('div'); row.className = 'list-row';
+    const inp = document.createElement('input'); inp.type = 'text'; inp.value = t; inp.placeholder = 'كلام الكارت';
+    inp.addEventListener('input', () => { content.notes[i] = inp.value; markDirty(); });
+    const up = btn('▲', 'فوق', i === 0, () => { swap(content.notes, i, i-1); renderNotes(); markDirty(); });
+    const dn = btn('▼', 'جوه', i === content.notes.length-1, () => { swap(content.notes, i, i+1); renderNotes(); markDirty(); });
+    const del = btn('🗑️', 'حذف', false, () => { content.notes.splice(i,1); renderNotes(); markDirty(); });
+    row.append(inp, up, dn, del); box.appendChild(row);
+  });
+}
+$('#addNote').addEventListener('click', () => { content.notes.push(''); renderNotes(); markDirty(); const ins = $$('#notesList input'); ins[ins.length-1].focus(); });
+function btn(txt, title, disabled, fn){ const b = document.createElement('button'); b.className = 'icon-btn'; b.textContent = txt; b.title = title; b.disabled = disabled; b.addEventListener('click', fn); return b; }
+const swap = (a, i, j) => { [a[i], a[j]] = [a[j], a[i]]; };
+
+/* ---------- images ---------- */
+function newPath(dir, ext){ return `assets/${dir}/${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}.${ext}`; }
+async function processImage(file, max = 1600){
+  let bmp;
+  try { bmp = await createImageBitmap(file, { imageOrientation: 'from-image' }); }
+  catch(e){ bmp = await new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = URL.createObjectURL(file); }); }
+  const w = bmp.width, h = bmp.height, k = Math.min(1, max / Math.max(w, h));
+  const c = document.createElement('canvas'); c.width = Math.round(w*k); c.height = Math.round(h*k);
+  c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+  const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.86));
+  return blob;
+}
+async function addImageFile(file, dir){
+  const blob = await processImage(file);
+  const path = newPath(dir, 'jpg');
+  pending[path] = { b64: bufToB64(await blob.arrayBuffer()) };
+  previews[path] = URL.createObjectURL(blob);
+  return path;
+}
+
+function renderCake(){
+  const img = $('#cakePrev');
+  img.src = content.cakePhoto ? url(content.cakePhoto) : 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><rect width="10" height="10" fill="#fde6ee"/><text x="5" y="6.5" font-size="4" text-anchor="middle">🎂</text></svg>');
+  $('#cakeDel').disabled = !content.cakePhoto;
+}
+$('#cakePick').addEventListener('click', () => $('#cakeFile').click());
+$('#cakeFile').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  updateStatus('جاري تجهيز الصورة…');
+  try { content.cakePhoto = await addImageFile(f, 'photos'); renderCake(); markDirty(); }
+  catch(err){ updateStatus('ما كدرت أقرا الصورة', 'err'); }
+});
+$('#cakeDel').addEventListener('click', () => { content.cakePhoto = ''; renderCake(); markDirty(); });
+
+function renderPhotos(){
+  const box = $('#photos'); box.innerHTML = '';
+  $('#photosEmpty').classList.toggle('hidden', content.photos.length > 0);
+  content.photos.forEach((p, i) => {
+    const d = document.createElement('div'); d.className = 'ph';
+    d.innerHTML = `<div class="img"><img loading="lazy" alt=""><span class="num">${i+1}</span>${pending[p.src] ? '<span class="new">جديدة</span>' : ''}</div>`;
+    d.querySelector('img').src = url(p.src);
+    const cap = document.createElement('input'); cap.type = 'text'; cap.placeholder = 'كلام تحت الصورة…'; cap.value = p.caption || '';
+    cap.addEventListener('input', () => { p.caption = cap.value; markDirty(); });
+    const acts = document.createElement('div'); acts.className = 'acts';
+    const mk = (t, title, dis, fn, cls) => { const b = document.createElement('button'); b.textContent = t; b.title = title; b.disabled = dis; if (cls) b.className = cls; b.addEventListener('click', fn); return b; };
+    acts.append(
+      mk('→', 'قبل', i === 0, () => { swap(content.photos, i, i-1); renderPhotos(); markDirty(); }),
+      mk('🎂', 'خليها صورة الكيكة', false, () => { content.cakePhoto = p.src; renderCake(); markDirty(); updateStatus('صارت صورة الكيكة ✓ (لا تنسى تنشر)', 'dirty'); }),
+      mk('🗑️', 'حذف', false, () => { if (confirm('تحذف هاي الصورة؟')){ content.photos.splice(i,1); renderPhotos(); markDirty(); } }, 'del'),
+      mk('←', 'بعد', i === content.photos.length-1, () => { swap(content.photos, i, i+1); renderPhotos(); markDirty(); }),
+    );
+    d.append(cap, acts); box.appendChild(d);
+  });
+}
+$('#addPhotos').addEventListener('click', () => $('#photoFiles').click());
+async function addPhotos(files){
+  files = [...files].filter(f => f.type.startsWith('image/') || /\.(jpe?g|png|webp|heic|gif)$/i.test(f.name));
+  for (let i = 0; i < files.length; i++){
+    updateStatus(`جاري تجهيز الصور… ${i+1}/${files.length}`);
+    try { const path = await addImageFile(files[i], 'photos'); content.photos.push({ src: path, caption: '' }); renderPhotos(); }
+    catch(e){ console.warn(e); }
+  }
+  markDirty();
+}
+$('#photoFiles').addEventListener('change', e => { addPhotos(e.target.files); e.target.value = ''; });
+const gc = $('#galleryCard');
+gc.addEventListener('dragover', e => { e.preventDefault(); gc.classList.add('drop'); });
+gc.addEventListener('dragleave', () => gc.classList.remove('drop'));
+gc.addEventListener('drop', e => { e.preventDefault(); gc.classList.remove('drop'); addPhotos(e.dataTransfer.files); });
+
+/* ---------- song ---------- */
+function renderSong(){
+  const now = $('#songNow'), pl = $('#songPlayer');
+  if (content.song){
+    now.innerHTML = '🎶 الأغنية الحالية: <div class="song-name"></div>';
+    now.querySelector('.song-name').textContent = content.songName || content.song.split('/').pop();
+    pl.src = url(content.song); pl.classList.remove('hidden');
+  } else {
+    now.innerHTML = '🎼 حالياً: موسيقى <b>Happy Birthday</b> الافتراضية';
+    pl.removeAttribute('src'); pl.classList.add('hidden');
+  }
+  $('#songDel').disabled = !content.song;
+}
+$('#songPick').addEventListener('click', () => $('#songFile').click());
+$('#songFile').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  if (f.size > 45 * 1024 * 1024) return updateStatus('الأغنية كبيرة كلش (أكثر من 45 ميغا)', 'err');
+  updateStatus('جاري تجهيز الأغنية…');
+  const ext = (f.name.split('.').pop() || 'mp3').toLowerCase().replace(/[^a-z0-9]/g, '') || 'mp3';
+  const path = newPath('music', ext);
+  pending[path] = { b64: bufToB64(await f.arrayBuffer()) };
+  previews[path] = URL.createObjectURL(f);
+  content.song = path; content.songName = f.name;
+  renderSong(); markDirty();
+});
+$('#songDel').addEventListener('click', () => { content.song = ''; content.songName = ''; renderSong(); markDirty(); });
+
+/* =========================================================
+   Publish: one commit with everything
+   ========================================================= */
+const usedPaths = c => new Set([c.cakePhoto, c.song, ...(c.photos || []).map(p => p.src)].filter(Boolean));
+
+$('#saveBtn').addEventListener('click', async () => {
+  const b = $('#saveBtn'), prog = $('#prog'), bar = prog.querySelector('i');
+  b.disabled = true; b.innerHTML = '<span class="spin"></span> جاري النشر'; prog.classList.remove('hidden'); bar.style.width = '5%';
+  try {
+    content.notes = content.notes.map(s => s.trim()).filter(Boolean);
+    const ref = await gh(`/git/ref/heads/${BRANCH}`);
+    const baseCommit = await gh(`/git/commits/${ref.object.sha}`);
+    const used = usedPaths(content), tree = [];
+    const uploads = Object.keys(pending).filter(p => used.has(p));
+    for (let i = 0; i < uploads.length; i++){
+      updateStatus(`جاري رفع الملفات… ${i+1}/${uploads.length}`);
+      const blob = await gh('/git/blobs', { method:'POST', body:{ content: pending[uploads[i]].b64, encoding:'base64' } });
+      tree.push({ path: uploads[i], mode:'100644', type:'blob', sha: blob.sha });
+      bar.style.width = (10 + 75 * (i+1) / uploads.length) + '%';
+    }
+    updateStatus('جاري النشر…');
+    tree.push({ path:'content.json', mode:'100644', type:'blob', content: JSON.stringify(content, null, 2) + '\n' });
+    const removed = [...usedPaths(original)].filter(p => !used.has(p) && p.startsWith('assets/'));
+    let newTree;
+    try { newTree = await gh('/git/trees', { method:'POST', body:{ base_tree: baseCommit.tree.sha, tree: [...tree, ...removed.map(p => ({ path:p, mode:'100644', type:'blob', sha:null }))] } }); }
+    catch(e){ newTree = await gh('/git/trees', { method:'POST', body:{ base_tree: baseCommit.tree.sha, tree } }); }
+    bar.style.width = '92%';
+    const commit = await gh('/git/commits', { method:'POST', body:{ message: 'Update site from admin panel', tree: newTree.sha, parents: [ref.object.sha] } });
+    await gh(`/git/refs/heads/${BRANCH}`, { method:'PATCH', body:{ sha: commit.sha } });
+    bar.style.width = '100%';
+    uploads.forEach(p => delete pending[p]);
+    Object.keys(pending).forEach(p => { if (!used.has(p)) delete pending[p]; });
+    original = clone(content); dirty = false;
+    renderNotes(); renderPhotos();
+    updateStatus('تم النشر ✓ الموقع يتحدث خلال دقيقة أو دقيقتين', 'ok');
+  } catch(e){
+    updateStatus('ما صار النشر: ' + (e.status === 409 || e.status === 422 ? 'صار تعارض، جرب مرة ثانية' : e.message), 'err');
+    b.disabled = false;
+  }
+  b.innerHTML = '💾 حفظ ونشر';
+  setTimeout(() => prog.classList.add('hidden'), 1200);
+});
+
+/* =========================================================
+   Settings
+   ========================================================= */
+$('#nBtn').addEventListener('click', async () => {
+  const pw = $('#nPw').value, pw2 = $('#nPw2').value, m = $('#nMsg');
+  if (pw.length < 10) return setMsg(m, 'الباسورد لازم 10 أحرف أو أكثر', 'err');
+  if (pw !== pw2) return setMsg(m, 'الباسوردين مو نفس الشي', 'err');
+  $('#nBtn').disabled = true; setMsg(m, 'جاري الحفظ…');
+  try {
+    KEY_BLOB = await encryptToken(TOKEN, pw);
+    await putFile(KEY_FILE, JSON.stringify(KEY_BLOB, null, 2), 'Change admin password');
+    $('#nPw').value = $('#nPw2').value = '';
+    setMsg(m, 'تغير الباسورد ✓', 'ok');
+  } catch(e){ setMsg(m, e.message, 'err'); }
+  $('#nBtn').disabled = false;
+});
+$('#tBtn').addEventListener('click', async () => {
+  const token = $('#newToken').value.trim(), pw = $('#curPw').value, m = $('#tMsg');
+  if (!token || !pw) return setMsg(m, 'اكتب المفتاح الجديد والباسورد الحالي', 'err');
+  $('#tBtn').disabled = true; setMsg(m, 'جاري التأكد…');
+  try {
+    try { await decryptToken(KEY_BLOB, pw); } catch(err){ throw new Error('الباسورد الحالي غلط'); }
+    await checkToken(token);
+    TOKEN = token;
+    KEY_BLOB = await encryptToken(token, pw);
+    await putFile(KEY_FILE, JSON.stringify(KEY_BLOB, null, 2), 'Update admin token');
+    remember(); $('#newToken').value = $('#curPw').value = '';
+    setMsg(m, 'تم حفظ المفتاح الجديد ✓', 'ok');
+  } catch(e){ setMsg(m, e.status === 401 ? 'المفتاح غلط أو منتهي' : e.message, 'err'); }
+  $('#tBtn').disabled = false;
+});
+</script>
+</body>
+</html>

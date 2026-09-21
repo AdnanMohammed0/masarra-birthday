@@ -227,12 +227,36 @@ nav b{font-weight:inherit}
   .deco{height:300px;min-width:0}
 }
 
+/* ---------- MEMORIES ---------- */
+.hero-title em,#cake .script-title em{font-style:normal}
+#memories{background:var(--pink)}
+#memories .script-title{color:var(--maroon)}
+#memories .back{color:var(--maroon)}
+#memories.active .script-title{animation:drop 1s ease both .2s}
+#choose.active .choice:nth-child(4){animation-delay:1.2s}
+body.no-photos .nav-mem,body.no-photos .choice-mem{display:none!important}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:30px 26px;width:min(1040px,100%);margin-top:26px;padding:0 6px}
+.gp{position:relative;background:#fff;padding:10px 10px 12px;box-shadow:0 10px 22px rgba(110,4,4,.2);transform:rotate(var(--r));transition:transform .35s;cursor:zoom-in}
+.gp::before{content:"";position:absolute;left:50%;top:-10px;width:70px;height:20px;transform:translateX(-50%) rotate(-3deg);background:rgba(244,169,196,.75)}
+.gp img{width:100%;aspect-ratio:1;object-fit:cover;background:#f6dbe5}
+.gp p{font-family:var(--ar2);color:var(--text-dark);text-align:center;font-size:14px;margin-top:8px;min-height:1.3em;line-height:1.5}
+.gp:hover{transform:rotate(0) scale(1.05);z-index:2}
+#memories.active .gp{animation:popIn .7s cubic-bezier(.3,1.4,.5,1) both;animation-delay:calc(.3s + var(--i) * 90ms)}
+#lightbox{position:fixed;inset:0;z-index:66;background:rgba(25,0,6,.92);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:.35s}
+#lightbox.show{opacity:1;visibility:visible}
+#lightbox figure{max-width:min(90vw,900px);text-align:center}
+#lightbox img{max-width:100%;max-height:76vh;border:8px solid #fff;box-shadow:0 20px 50px rgba(0,0,0,.5);margin:0 auto}
+#lightbox figcaption{font-family:var(--ar2);font-size:18px;margin-top:14px}
+.lb-close{position:absolute;top:14px;right:16px;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.12);font-size:20px}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.12);font-size:34px;line-height:1}
+.lb-prev{left:12px}.lb-next{right:12px}
+
 /* ---------- WISH OVERLAY ---------- */
 #wish{position:fixed;inset:0;z-index:60;display:grid;place-items:center;pointer-events:none;opacity:0;transition:opacity 1s;background:radial-gradient(circle,rgba(40,0,10,.55),rgba(20,0,5,.8))}
 #wish.show{opacity:1;pointer-events:auto}
 #wish div{text-align:center;padding:20px}
 #wish h2{font-family:var(--ar);font-size:clamp(46px,10vw,96px);text-shadow:0 0 30px #ff4f86}
-#wish p{font-family:var(--ar2);font-size:clamp(17px,3vw,24px);margin-top:10px;line-height:1.9}
+#wish p{white-space:pre-line;font-family:var(--ar2);font-size:clamp(17px,3vw,24px);margin-top:10px;line-height:1.9}
 #wish button{margin-top:22px;padding:10px 26px;border-radius:30px;background:#fff;color:var(--maroon);font-weight:700}
 
 /* ---------- FX / MUSIC ---------- */
@@ -319,6 +343,13 @@ nav b{font-weight:inherit}
   .cake-hint{flex-direction:column;gap:10px;padding:12px 16px;border-radius:18px;margin-top:14px;font-size:15px;width:100%;max-width:420px}
   .mic-btn{min-height:44px;padding:10px 22px;font-size:16px;width:100%}
 
+  /* memories */
+  .gallery{grid-template-columns:1fr 1fr;gap:22px 14px;margin-top:18px}
+  .gp{padding:7px 7px 9px}
+  .gp p{font-size:13px}
+  #memories .script-title{font-size:48px}
+  .lb-nav{top:auto;bottom:calc(24px + env(safe-area-inset-bottom));transform:none}
+
   /* wish */
   #wish button{min-height:48px;padding:12px 34px;font-size:18px}
 }
@@ -402,22 +433,23 @@ nav b{font-weight:inherit}
 </svg>
 
 <nav id="nav">
-  <button class="brand" data-go="hero">مسرة 🌹</button>
+  <button class="brand" data-go="hero"><span data-t="name">مسرة</span> 🌹</button>
   <button data-go="hero"><i>🏠</i><b>Happy Birthday</b><em>البداية</em></button>
   <button data-go="choose"><i>🎁</i><b>Your Surprise</b><em>المفاجأة</em></button>
   <button data-go="message"><i>💌</i><b>Message</b><em>الرسالة</em></button>
   <button data-go="letter" class="nav-letter"><i>📜</i><b>Letter</b><em>الرسالة</em></button>
   <button data-go="flowers"><i>🌷</i><b>Flowers</b><em>الورد</em></button>
   <button data-go="cake"><i>🎂</i><b>Cake</b><em>الكيكة</em></button>
+  <button data-go="memories" class="nav-mem"><i>📸</i><b>Memories</b><em>ذكرياتنا</em></button>
 </nav>
 
 <!-- ============ INTRO: ROSE GARDEN ============ -->
 <section class="screen active" id="intro">
   <svg id="garden" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMax slice"></svg>
   <div class="intro-card">
-    <small>Happy Birthday</small>
-    <h1>مسرة</h1>
-    <button class="open-btn" id="openBtn">افتحي هديتج 💝</button>
+    <small data-t="introSubtitle">Happy Birthday</small>
+    <h1 data-t="name">مسرة</h1>
+    <button class="open-btn" id="openBtn" data-t="openBtn">افتحي هديتج 💝</button>
   </div>
 </section>
 
@@ -444,7 +476,7 @@ nav b{font-weight:inherit}
       <ellipse cx="76" cy="36" rx="7" ry="12" fill="#fff" opacity=".45" transform="rotate(30 76 36)"/>
     </svg>
 
-    <h2 class="hero-title">Happy Birthday!<span>مسرة</span></h2>
+    <h2 class="hero-title"><em data-t="heroTitle">Happy Birthday!</em><span data-t="name">مسرة</span></h2>
     <div class="envelope" id="heroEnv" role="button" aria-label="افتحي الظرف">
       <div class="env-body"></div>
       <div class="env-flap"></div>
@@ -457,7 +489,7 @@ nav b{font-weight:inherit}
 <!-- ============ CHOOSE ============ -->
 <section class="screen" id="choose">
   <div class="pad">
-    <h2 class="script-title">Choose Your Surprise</h2>
+    <h2 class="script-title" data-t="chooseTitle">Choose Your Surprise</h2>
     <div class="choices">
       <button class="choice" data-go="message">
         <svg viewBox="0 0 200 180"><g transform="rotate(-4 100 90)">
@@ -487,6 +519,14 @@ nav b{font-weight:inherit}
           <g fill="#fff" opacity=".7"><circle cx="86" cy="74" r="3"/><circle cx="106" cy="76" r="3"/><circle cx="73" cy="77" r="2.5"/><circle cx="123" cy="81" r="2.5"/></g>
         </svg>
         <div class="lbl"><span>CAKE</span><small>كيكتج</small></div>
+      </button>
+      <button class="choice choice-mem" data-go="memories">
+        <svg viewBox="0 0 200 180">
+          <g transform="rotate(-10 80 90)"><rect x="30" y="30" width="95" height="112" fill="#fff"/><rect x="38" y="38" width="79" height="76" fill="#f4a9c4"/><path d="M78,68 c-4,-9 -18,-7 -16,4 c1,6 10,11 16,17 c6,-6 15,-11 16,-17 c2,-11 -12,-13 -16,-4z" fill="#fff"/></g>
+          <g transform="rotate(8 130 90)"><rect x="85" y="38" width="95" height="112" fill="#fff"/><rect x="93" y="46" width="79" height="76" fill="#b8a9cf"/><circle cx="150" cy="66" r="9" fill="#ffe08a"/><path d="M93,122 L120,90 L140,110 L152,98 L172,122Z" fill="#8a6fb0"/></g>
+          <rect x="112" y="28" width="34" height="12" fill="rgba(244,169,196,.8)" transform="rotate(8 130 34)"/>
+        </svg>
+        <div class="lbl"><span>MEMORIES</span><small>ذكرياتنا</small></div>
       </button>
     </div>
     <button class="back" data-go="hero" aria-label="رجوع"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
@@ -526,11 +566,11 @@ nav b{font-weight:inherit}
 <section class="screen" id="flowers">
   <div class="pad">
     <div class="flower-stage">
-      <div class="notes l"><div class="note" dir="rtl"></div><div class="note" dir="rtl"></div></div>
+      <div class="notes l"></div>
       <svg id="bouquetSvg" viewBox="0 0 300 380" role="button" aria-label="الورد"></svg>
-      <div class="notes r"><div class="note" dir="rtl"></div><div class="note" dir="rtl"></div></div>
+      <div class="notes r"></div>
     </div>
-    <p class="caption">A bouquet made with love</p>
+    <p class="caption" data-t="flowersCaption">A bouquet made with love</p>
     <button class="back" data-go="choose" aria-label="رجوع"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
   </div>
 </section>
@@ -538,11 +578,11 @@ nav b{font-weight:inherit}
 <!-- ============ CAKE ============ -->
 <section class="screen gingham-lav" id="cake">
   <div class="pad">
-    <h2 class="script-title">Happy Birthday <span class="nm">مسرة</span></h2>
+    <h2 class="script-title"><em data-t="cakeTitle">Happy Birthday</em> <span class="nm" data-t="name">مسرة</span></h2>
     <div class="cake-stage">
       <div class="deco l">
-        <div class="strip"><img data-photo="photo1" alt=""><img data-photo="photo2" alt=""><svg class="bow" viewBox="0 0 120 100"><use href="#bowS"/></svg></div>
-        <div class="camera"><img data-photo="photo3" alt=""></div>
+        <div class="strip"><img data-slot="0" alt=""><img data-slot="1" alt=""><svg class="bow" viewBox="0 0 120 100"><use href="#bowS"/></svg></div>
+        <div class="camera"><img data-slot="2" alt=""></div>
       </div>
       <div class="cake-wrap">
         <svg viewBox="0 0 400 400" id="cakeSvg"></svg>
@@ -563,8 +603,8 @@ nav b{font-weight:inherit}
           <g transform="translate(160 160)"><path d="M0,0 C4,-18 14,-26 24,-30" stroke="#3d6b2c" stroke-width="2.5" fill="none"/><path d="M14,4 C16,-12 20,-22 24,-30" stroke="#3d6b2c" stroke-width="2.5" fill="none"/>
             <circle cx="0" cy="6" r="10" fill="#f6c5d4" stroke="#c8102e" stroke-width="2"/><circle cx="16" cy="10" r="10" fill="#f6c5d4" stroke="#c8102e" stroke-width="2"/></g>
         </svg>
-        <div class="polaroid p1"><img data-photo="photo4" alt=""></div>
-        <div class="polaroid p2"><img data-photo="photo5" alt=""></div>
+        <div class="polaroid p1"><img data-slot="3" alt=""></div>
+        <div class="polaroid p2"><img data-slot="4" alt=""></div>
       </div>
     </div>
     <div class="cake-hint" id="cakeHint" dir="rtl"><span>اطفي الشموع واتمنّي أمنية 🕯️ (اضغطي عليها أو انفخي)</span><button class="mic-btn" id="micBtn">🎤 انفخي</button></div>
@@ -572,37 +612,51 @@ nav b{font-weight:inherit}
   </div>
 </section>
 
-<div id="wish"><div><h2>تمنّي أمنية ✨</h2><p id="wishText"></p><button id="wishClose">💖</button></div></div>
+<!-- ============ MEMORIES ============ -->
+<section class="screen" id="memories">
+  <div class="pad">
+    <h2 class="script-title" data-t="memoriesTitle">Our Memories</h2>
+    <div class="gallery" id="gallery"></div>
+    <button class="back" data-go="choose" aria-label="رجوع"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+  </div>
+</section>
+
+<div id="lightbox" aria-hidden="true">
+  <button class="lb-close" aria-label="إغلاق">✕</button>
+  <button class="lb-nav lb-prev" aria-label="السابقة">‹</button>
+  <figure><img alt=""><figcaption dir="rtl"></figcaption></figure>
+  <button class="lb-nav lb-next" aria-label="التالية">›</button>
+</div>
+
+<div id="wish"><div><h2 data-t="wishTitle">تمنّي أمنية ✨</h2><p id="wishText"></p><button id="wishClose">💖</button></div></div>
 <canvas id="fx"></canvas>
 <button id="musicBtn" aria-label="الموسيقى"><span class="bars"><i></i><i></i><i></i><i></i></span></button>
 
 <script>
 /* =========================================================
-   ✏️ عدّل هنا: النصوص، الأغنية، الصور
+   المحتوى الافتراضي. المحتوى الحقيقي ينقرا من content.json
+   (تعدله من لوحة التحكم: admin.html)
    ========================================================= */
-const CONFIG = {
+const DEFAULTS = {
   name: 'مسرة',
-  song: 'assets/song.mp3',          // حط الأغنية بهذا الاسم داخل مجلد assets (إذا ماكو ملف، تشتغل موسيقى Happy Birthday تلقائياً)
-  photos: {                          // الصور داخل مجلد assets
-    cake:   'assets/cake.jpg',       // الصورة اللي فوق الكيكة
-    photo1: 'assets/photo1.jpg',
-    photo2: 'assets/photo2.jpg',
-    photo3: 'assets/photo3.jpg',
-    photo4: 'assets/photo4.jpg',
-    photo5: 'assets/photo5.jpg',
-  },
+  introSubtitle: 'Happy Birthday',
+  openBtn: 'افتحي هديتج 💝',
+  heroTitle: 'Happy Birthday!',
+  chooseTitle: 'Choose Your Surprise',
   letterTitle: 'حبيبتي مسرة،',
-  letter:
-`اليوم عيدج، بس آني اللي أخذت أحلى هدية… لأنج بحياتي.
-كل ضحكة منج تنوّر أيامي، وكل لحظة وياج تصير ذكرى ما تنتسى.
-أتمنى هالسنة الجديدة تجيبلج فرح، وذكريات حلوة، وكل الحب اللي تستاهليه.
-إنتِ تستاهلين الدنيا كلها وأكثر.
-كل عام وإنتِ بخير يا عمري،
-أحبج للأبد ❤️`,
+  letter: 'اليوم عيدج، بس آني اللي أخذت أحلى هدية… لأنج بحياتي.\nكل ضحكة منج تنوّر أيامي، وكل لحظة وياج تصير ذكرى ما تنتسى.\nأتمنى هالسنة الجديدة تجيبلج فرح، وذكريات حلوة، وكل الحب اللي تستاهليه.\nإنتِ تستاهلين الدنيا كلها وأكثر.\nكل عام وإنتِ بخير يا عمري،\nأحبج للأبد ❤️',
   signature: 'Forever yours',
-  notes: ['ورد لأحلى إنسانة ❤️', 'لأغلى شخص بالدنيا 🌹', 'هذا الورد إلج بس 🌸', 'تستاهلين كل ورد العالم 💐'],
-  wish: 'كل عام وإنتِ حبي، وضحكتج، وأحلى شي بحياتي 💖<br>عسى كل أمنياتج تتحقق يا مسرة',
+  notes: ['ورد لأحلى إنسانة ❤️', 'هذا الورد إلج بس 🌸', 'لأغلى شخص بالدنيا 🌹', 'تستاهلين كل ورد العالم 💐'],
+  flowersCaption: 'A bouquet made with love',
+  cakeTitle: 'Happy Birthday',
+  memoriesTitle: 'Our Memories',
+  wishTitle: 'تمنّي أمنية ✨',
+  wish: 'كل عام وإنتِ حبي، وضحكتج، وأحلى شي بحياتي 💖\nعسى كل أمنياتج تتحقق يا مسرة',
+  cakePhoto: '',
+  photos: [],   // [{src:'assets/photos/x.jpg', caption:'...'}]
+  song: '',     // فارغ = موسيقى Happy Birthday الافتراضية
 };
+let CONFIG = {...DEFAULTS};
 
 /* ---------- helpers ---------- */
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
@@ -615,22 +669,49 @@ function placeholder(label){
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd1e0"/><stop offset="1" stop-color="#f08bab"/></linearGradient></defs><rect width="200" height="200" fill="url(#g)"/><path d="M100,78 C90,56 56,60 62,90 C66,110 92,124 100,138 C108,124 134,110 138,90 C144,60 110,56 100,78Z" fill="#fff" opacity=".85"/><text x="100" y="172" font-family="sans-serif" font-size="16" fill="#8a1430" text-anchor="middle">${label}</text></svg>`;
   return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
 }
-$$('img[data-photo]').forEach(img => {
-  const key = img.dataset.photo;
-  img.onerror = () => { img.onerror = null; img.src = placeholder(key + '.jpg'); };
-  img.src = CONFIG.photos[key];
-});
+function setImg(img, src, label){
+  img.onerror = () => { img.onerror = null; img.src = placeholder(label); };
+  img.src = src || placeholder(label);
+}
 
-/* ---------- fill texts ---------- */
-$('#miniTitle').textContent = CONFIG.letterTitle;
-$('#miniText').textContent = CONFIG.letter;
-$('#letterTitle').textContent = CONFIG.letterTitle;
-$('#letterSign').textContent = CONFIG.signature;
-$$('.note').forEach((n,i) => {
-  const order = [0,2,1,3]; // left col, right col
-  n.textContent = CONFIG.notes[order[i]] || '';
-});
-$('#wishText').innerHTML = CONFIG.wish;
+function applyContent(){
+  const C = CONFIG;
+  document.title = 'Happy Birthday ' + C.name;
+  $$('[data-t]').forEach(e => { e.textContent = C[e.dataset.t] ?? ''; });
+  $('#miniTitle').textContent = C.letterTitle;
+  $('#miniText').textContent = C.letter;
+  $('#letterTitle').textContent = C.letterTitle;
+  $('#letterSign').textContent = C.signature;
+  $('#wishText').textContent = C.wish;
+
+  // notes: alternate between left and right columns
+  const L = $('.notes.l'), Rt = $('.notes.r'); L.innerHTML = ''; Rt.innerHTML = '';
+  (C.notes || []).forEach((t, i) => {
+    const n = document.createElement('div'); n.className = 'note'; n.dir = 'rtl'; n.textContent = t;
+    n.style.animationDelay = (1.6 + i*0.3) + 's';
+    (i % 2 ? Rt : L).appendChild(n);
+  });
+
+  // photos
+  const photos = (C.photos || []).filter(p => p && p.src);
+  setImg($('.cake-photo'), C.cakePhoto, 'صورة الكيكة');
+  $$('img[data-slot]').forEach(img => {
+    const p = photos.length ? photos[+img.dataset.slot % photos.length] : null;
+    setImg(img, p && p.src, 'صورة');
+  });
+  document.body.classList.toggle('no-photos', !photos.length);
+  const g = $('#gallery'); g.innerHTML = '';
+  photos.forEach((p, i) => {
+    const f = document.createElement('div'); f.className = 'gp';
+    f.style.setProperty('--r', (((i*37) % 11) - 5) + 'deg'); f.style.setProperty('--i', i);
+    const im = document.createElement('img'); im.loading = 'lazy'; im.alt = p.caption || ''; setImg(im, p.src, 'صورة');
+    const cap = document.createElement('p'); cap.dir = 'rtl'; cap.textContent = p.caption || '';
+    f.append(im, cap); f.addEventListener('click', () => openLightbox(i));
+    g.appendChild(f);
+  });
+  window.__photos = photos;
+}
+applyContent();
 
 /* ---------- wax seal ---------- */
 (function(){
@@ -750,10 +831,10 @@ const Synth = (() => {
 })();
 
 const Music = {
-  audio: new Audio(CONFIG.song), mode: 'file', playing: false, wanted: true,
+  audio: new Audio(), mode: 'synth', playing: false, wanted: true,
   init(){
     this.audio.loop = true; this.audio.preload = 'auto';
-    this.audio.addEventListener('error', () => { if (this.mode==='file'){ this.mode='synth'; if (this.wanted && this.playing) { this.playing=false; this.play(); } } });
+    this.audio.addEventListener('error', () => { if (this.mode==='file' && this.audio.getAttribute('src')){ this.mode='synth'; if (this.wanted && this.playing) { this.playing=false; this.play(); } } });
   },
   async play(){
     this.wanted = true;
@@ -765,12 +846,17 @@ const Music = {
     }
     this.ui();
   },
+  setSource(url){
+    const was = this.playing;
+    this.audio.pause(); Synth.pause(); this.playing = false;
+    if (url){ this.audio.src = url; this.mode = 'file'; } else { this.audio.removeAttribute('src'); this.mode = 'synth'; }
+    if (was) this.play();
+  },
   pause(){ this.wanted = false; this.playing = false; this.mode==='file' ? this.audio.pause() : Synth.pause(); this.ui(); },
   toggle(){ this.playing ? this.pause() : this.play(); },
   ui(){ $('#musicBtn').classList.toggle('off', !this.playing); $('#vinyl').classList.toggle('spin', this.playing); }
 };
 Music.init();
-Music.play(); // try autoplay immediately
 const unlock = () => { if (Music.wanted && (!Music.playing || (Music.mode==='synth' && !Synth.running()))) Music.play(); };
 ['pointerdown','keydown','touchstart'].forEach(ev => document.addEventListener(ev, unlock, {passive:true}));
 $('#musicBtn').addEventListener('click', e => { e.stopPropagation(); Music.toggle(); });
@@ -936,6 +1022,35 @@ function frame(now){
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
+
+/* ---------- lightbox ---------- */
+let lbIndex = 0;
+function openLightbox(i){ lbIndex = i; showLb(); $('#lightbox').classList.add('show'); }
+function showLb(){
+  const ps = window.__photos || []; if (!ps.length) return;
+  lbIndex = (lbIndex + ps.length) % ps.length;
+  const p = ps[lbIndex]; setImg($('#lightbox img'), p.src, 'صورة'); $('#lightbox figcaption').textContent = p.caption || '';
+}
+$('#lightbox').addEventListener('click', e => {
+  e.stopPropagation();
+  if (e.target.closest('.lb-prev')){ lbIndex--; showLb(); }
+  else if (e.target.closest('.lb-next')){ lbIndex++; showLb(); }
+  else if (e.target.closest('.lb-close') || e.target.id === 'lightbox') $('#lightbox').classList.remove('show');
+});
+let tx = null;
+$('#lightbox').addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true});
+$('#lightbox').addEventListener('touchend', e => { if (tx == null) return; const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 50){ lbIndex += dx < 0 ? 1 : -1; showLb(); } tx = null; });
+document.addEventListener('keydown', e => {
+  if (!$('#lightbox').classList.contains('show')) return;
+  if (e.key === 'Escape') $('#lightbox').classList.remove('show');
+  if (e.key === 'ArrowLeft'){ lbIndex--; showLb(); } if (e.key === 'ArrowRight'){ lbIndex++; showLb(); }
+});
+
+/* ---------- load content.json (edited from admin.html) ---------- */
+fetch('content.json?v=' + Date.now(), {cache: 'no-store'})
+  .then(r => r.ok ? r.json() : {})
+  .catch(() => ({}))
+  .then(c => { CONFIG = {...DEFAULTS, ...c}; applyContent(); Music.setSource(CONFIG.song); Music.play(); });
 </script>
 </body>
 </html>
