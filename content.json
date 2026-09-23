@@ -4,8 +4,8 @@
   "openBtn": "افتحي هديتج 💝",
   "heroTitle": "Happy Birthday!",
   "chooseTitle": "Choose Your Surprise",
-  "letterTitle": "حبيبتي مسرة،",
-  "letter": "اليوم عيدج، بس آني اللي أخذت أحلى هدية… لأنج بحياتي.\nكل ضحكة منج تنوّر أيامي، وكل لحظة وياج تصير ذكرى ما تنتسى.\nأتمنى هالسنة الجديدة تجيبلج فرح، وذكريات حلوة، وكل الحب اللي تستاهليه.\nإنتِ تستاهلين الدنيا كلها وأكثر.\nكل عام وإنتِ بخير يا عمري،\nأحبج للأبد ❤️",
+  "letterTitle": "ل احلى سمسم",
+  "letter": "اليوم عيدميلادج بس اني الي اخذت الهديه لان انت هديتي وانت موجوده بحياتي \nكل ضحكة منج تنوّر أيامي، وكل لحظة وياج تصير ذكرى ما تنتسى.\nأتمنى هالسنة الجديدة تجيبلج فرح، وذكريات حلوة، وكل الحب اللي تستاهليه.\nإنتِ تستاهلين الدنيا كلها وأكثر.\nكل عام وإنتِ بخير يا عمري،\nأحبج حيل",
   "signature": "Forever yours",
   "notes": [
     "ورد لأحلى إنسانة ❤️",
@@ -17,9 +17,26 @@
   "cakeTitle": "Happy Birthday",
   "memoriesTitle": "Our Memories",
   "wishTitle": "تمنّي أمنية ✨",
-  "wish": "كل عام وإنتِ حبي، وضحكتج، وأحلى شي بحياتي 💖\nعسى كل أمنياتج تتحقق يا مسرة",
-  "cakePhoto": "",
-  "photos": [],
+  "wish": "احبج حيل اتمنى تعيشين كل حياتج بفرح متشوفين شر ابد ويحفظج الي يا احلى حبيبه😋",
+  "cakePhoto": "assets/photos/mudw12pc-woa0h.jpg",
+  "photos": [
+    {
+      "src": "assets/photos/mudw1cep-ntct3.jpg",
+      "caption": ""
+    },
+    {
+      "src": "assets/photos/mudw1cgo-nopeg.jpg",
+      "caption": ""
+    },
+    {
+      "src": "assets/photos/mudw1chz-vtvue.jpg",
+      "caption": ""
+    },
+    {
+      "src": "assets/photos/mudw1cke-ki5jj.jpg",
+      "caption": ""
+    }
+  ],
   "song": "assets/music/mudw0csc-t1t1p.mp3",
   "songName": "AlKhawar Art Production – وليد الشامي -عيد عمري | علي الخوار.mp3"
 }
